@@ -15,35 +15,56 @@ class Board {
     }
     
     static changeLine(arr){
-        // Shift single line according to game rule
-        let arrCopy = [...arr] // Make deep copy of array
-        let alreadyCombined = -1; // This will hold where the last adjacent values were defined
-        // 1. Number tiles should shift left as far as possible
-        for(let i = 0; i<arrCopy.length; i++){
-            if ((arrCopy[i] !== 0 && arrCopy[i - 1] === 0 )|| arrCopy[i] === arrCopy[i - 1]){
-                // If the current value is 0 and it can be moved left (since 0 before it)
-                // Or if there are no 0 before but the values next to eachother are the same
-                let count = i; // Store current i value
-                let movedVal = arrCopy[i]; // Store value to be moved
-                while(arrCopy[count-1]===0){
-                    // While the value can be moved left (since 0)
-                    count-=1;
-                }
-                if ((movedVal === arrCopy[count - 1]) && count-1 !== alreadyCombined){
-                    // 2. If the value just moved matches the one beside it, combine them
-                    // Cant combine them once a value has already been combined once this turn
-                    arrCopy[count-1]+=movedVal;
-                    alreadyCombined = count-1; 
-                }else{
-                    // Place value moved at left most spot, if doesnt match the one beside it
-                    arrCopy[count] = movedVal; 
-                }
-                arrCopy[i] = 0; // Set the spot where value moved from to 0
+        // // Shift single line according to game rule
+        // let arrCopy = [...arr] // Make deep copy of array
+        // let alreadyCombined = -1; // This will hold where the last adjacent values were defined
+        // // 1. Number tiles should shift left as far as possible
+        // for(let i = 0; i<arrCopy.length; i++){
+        //     if ((arrCopy[i] !== 0 && arrCopy[i - 1] === 0 )|| arrCopy[i] === arrCopy[i - 1]){
+        //         // If the current value is 0 and it can be moved left (since 0 before it)
+        //         // Or if there are no 0 before but the values next to eachother are the same
+        //         let count = i; // Store current i value
+        //         let movedVal = arrCopy[i]; // Store value to be moved
+        //         while(arrCopy[count-1]===0){
+        //             // While the value can be moved left (since 0)
+        //             count-=1;
+        //         }
+        //         if ((movedVal === arrCopy[count - 1]) && count-1 !== alreadyCombined){
+        //             // 2. If the value just moved matches the one beside it, combine them
+        //             // Cant combine them once a value has already been combined once this turn
+        //             arrCopy[count-1]+=movedVal;
+        //             alreadyCombined = count-1; 
+        //         }else{
+        //             // Place value moved at left most spot, if doesnt match the one beside it
+        //             arrCopy[count] = movedVal; 
+        //         }
+        //         arrCopy[i] = 0; // Set the spot where value moved from to 0
 
+        //     }
+        // }
+        // console.log(arrCopy);
+        // return arr !== arrCopy;
+
+        // Remove all zeroes
+        let noZeroArr = arr.filter((val) => val!==0);
+
+        // Combine any adjacent values according to the rules
+        let alreadyCombined = false;
+        for(let i = 1; i< noZeroArr.length;i++){
+            let currVal = i; // hold the current i value
+            if ((noZeroArr[i] === noZeroArr[currVal - 1]) && currVal-1 !== alreadyCombined){
+                noZeroArr[currVal - 1] += parseInt(noZeroArr.splice(i,1)); // Splice value and add to adjacent
+                alreadyCombined = currVal-1; // Holds the combined value so dont combine again this turn
+                i--; // Since combined a value, backtrack
             }
         }
-        console.log(arrCopy);
-        return arr !== arrCopy;
+
+        // Add the zeroes back to the array 
+        for(let i = noZeroArr.length; i<arr.length;i++){
+            // Add zeroes to the rest of the array
+            noZeroArr.push(0);
+        }
+        console.log(noZeroArr);
     }
 
     get board(){
@@ -79,8 +100,9 @@ class Board {
 // Board.changeLine([2, 0, 2, 4, 0, 8]); //[ 4, 4, 8, 0, 0, 0 ]
 
 // Test 4 - board should print
-let board = new Board([[2,3,0,0],[0,3,4,0],[5,0,5,0],[3,2,3,0]]);
-board.board;
+// let board = new Board([[2,3,0,0],[0,3,4,0],[5,0,5,0],[3,2,3,0]]);
+// board.board;
+Board.changeLine([8, 8, 0, 0, 0, 0]);
 /********************THINGS LEARNED ************************************ */
 /* 
  * Create class method with keyword 'static' before function name 
