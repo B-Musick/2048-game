@@ -63,18 +63,29 @@ class Board {
     // Reverse determines if line should be reversed
     
     // Return newly created array
-        let grid = this.grid;
+        // let grid = this.grid;
         let line = []; // This will hold the line to return
 
         // Extract the line
         // Verticle = true return column i, false return row i (grid[i])
-        !vertical ? line = grid[i] : grid.forEach((row) => {line.push(row[i])});
+        !vertical ? line = this.grid.splice(i,1)[0] : this.grid.forEach((row) => {line.push(row.splice(i,1)[0])});
 
         // Reverse the line if needed
         // Reverse false return line normal, true then reverse it
         reverse ? line = line.reverse() : line;
 
         return line;
+    }
+
+    insertLine(line, i, vertical, reverse){
+        // Works like extractLine but in reverse
+
+        // If line was reversed then re-reverse it
+        reverse ? line.reverse():line;
+
+        if(vertical){
+            this.grid
+        }
     }
 
 }
@@ -102,6 +113,7 @@ let board = new Board([[2,3,0,0],[0,3,4,0],[5,0,5,0],[3,2,3,0]]);
 board.printBoard();
 Board.changeLine([8, 8, 0, 0, 0, 0]);
 console.log(board.extractLine(2,true,true));
+board.printBoard();
 /********************THINGS LEARNED ************************************ */
 /* 
  * Create class method with keyword 'static' before function name 
