@@ -84,8 +84,27 @@ class Board {
         reverse ? line.reverse():line;
 
         if(vertical){
-            this.grid
+            let idxCount = 0; // Used to count the index for the column values to insert from line array
+            this.grid.forEach((row) => {
+                // Insert the column values into each (row) at the respective 'i'
+                row.splice(i, 0, line[idxCount]);
+                idxCount++;
+            });
+            
+            
+        }else{
+            this.grid.splice(i,0,line);
         }
+
+    }
+
+    shift(direction){
+        // This should return a new board object in the shifted form in direction
+        // The existing board shouldnt be
+        let thisBoard = new Board([...this.grid]); // Make deep copy of board
+        
+
+
     }
 
 }
@@ -109,10 +128,12 @@ class Board {
 // Board.changeLine([2, 0, 2, 4, 0, 8]); //[ 4, 4, 8, 0, 0, 0 ]
 
 // Test 4 - board should print
-let board = new Board([[2,3,0,0],[0,3,4,0],[5,0,5,0],[3,2,3,0]]);
+let board = new Board([[1,2,3],[4,5,6],[7,8,9]]);
 board.printBoard();
 Board.changeLine([8, 8, 0, 0, 0, 0]);
-console.log(board.extractLine(2,true,true));
+board.extractLine(2,true,true);
+board.printBoard();
+board.insertLine([13,14,15],2,true,true);
 board.printBoard();
 /********************THINGS LEARNED ************************************ */
 /* 
