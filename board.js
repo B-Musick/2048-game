@@ -48,7 +48,8 @@ class Board {
             noZeroArr.push(0);
         }
         // Return boolean whether array changed or not
-        return arr === noZeroArr; 
+        console.log(arr === noZeroArr); 
+        return noZeroArr;
         
     }
     
@@ -192,18 +193,73 @@ class Board {
     shift(direction){
         // This should return a new board object in the shifted form in direction
         // The existing board shouldnt be
-        let thisBoard = new Board([...this.grid]); // Make deep copy of board
-        console.log(thisBoard.printBoard());
+        // let thisBoard = new Board([...this.grid]); // Make deep copy of board
+        let thisBoard = this.grid;
+        // console.log(thisBoard.printBoard());
         if(direction===this.LEFT||direction===this.RIGHT){
-            console.log('fuck');
+            let vertical = false; // the line extracted is a row not a column
+            if(direction === this.LEFT){
+                console.log('here')
+                // If direction is left, then the rows dont need to be reversed
+                let reverse = false;
+                for(let i =0;i<thisBoard.length;i++){
+                    console.log(i)
+                    let line = this.extractLine(i, vertical,reverse); // Returns extracted line
+                    line = Board.changeLine(line); // Change the lines according to game rules
+                    this.insertLine(line,i,vertical,reverse); // Insert the lines back into board
+                };
+            }else{
+                // If direction is right, row needs to be reversed to do the combining
+                let reverse = true;
+                thisBoard.forEach((val, i) => {
+                    let line = this.extractLine(i, vertical, reverse); // Returns extracted line
+                    line = Board.changeLine(line); // Change the lines according to game rules
+                    this.insertLine(line, i, vertical,reverse); // Insert the lines back into board
+                });
+            }
+        }else if(direction === this.UP|| direction === this.DOWN){
+            let vertical = true; // the line extracted is a column
+            if (direction === this.UP) {
+                let reverse = false;
+                // If direction is up, then the columns dont need to be reversed
+                thisBoard.forEach((val, i) => {
+                    let line = this.extractLine(i, vertical, reverse); // Returns extracted line
+                    line = Board.changeLine(line); // Change the lines according to game rules
+                    this.insertLine(line, i, vertical, reverse); // Insert the lines back into board
+                });
+            } else {
+                let reverse = true;
+                // If direction is down, column needs to be reversed to do the combining
+                thisBoard.forEach((val, i) => {
+                    let line = this.extractLine(i, vertical, reverse); // Returns extracted line
+                    line = Board.changeLine(line); // Change the lines according to game rules
+                    this.insertLine(line, i, vertical, reverse); // Insert the lines back into board
+                });
+            }
         }
-
-
+        
     }
-
 }
 
-
+let playGame=(arr)=>{
+    let board = new Board(arr);
+    // board.changeLine([8, 8, 0, 0, 0, 0]);
+    // board.extractLine(2,true,true);
+    // board.printBoard();
+    // board.insertLine([13,14,15],2,true,true);
+    board.printBoard();
+    document.addEventListener('keydown',(e)=>{
+        // Shift the board when the matching keycode pressed
+        board.shift((String.fromCharCode(e.keyCode)).toLowerCase());
+        board.printBoard();
+    })
+    
+    // board.shift('k');
+    // board.printBoard();
+    // board.shift('j');
+    // board.printBoard();
+}
+playGame([[2, 2, 2], [0, 2, 4], [2, 0, 2]]);
 
 
 
@@ -222,14 +278,19 @@ class Board {
 // Board.changeLine([2, 0, 2, 4, 0, 8]); //[ 4, 4, 8, 0, 0, 0 ]
 
 // Test 4 - board should print
-let board = new Board([[1,2,3],[4,5,6],[7,8,9]]);
+// let board = new Board([[2,2,0],[0,2,0],[2,0,2]]);
 
-board.printBoard();
-Board.changeLine([8, 8, 0, 0, 0, 0]);
-board.extractLine(2,true,true);
-board.printBoard();
-board.insertLine([13,14,15],2,true,true);
-board.printBoard();
+// board.printBoard();
+// // board.changeLine([8, 8, 0, 0, 0, 0]);
+// // board.extractLine(2,true,true);
+// // board.printBoard();
+// // board.insertLine([13,14,15],2,true,true);
+// board.printBoard();
+// board.shift('k');
+// board.printBoard();
+// board.shift('j');
+// board.printBoard();
+
 /********************THINGS LEARNED ************************************ */
 /* 
  * Create class method with keyword 'static' before function name 
