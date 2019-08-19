@@ -1,0 +1,7 @@
+body{
+    display: flex;
+}
+#score-banner{
+    display: block;
+    flex-wrap: nowrap;
+}

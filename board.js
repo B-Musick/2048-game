@@ -7,6 +7,12 @@ class Board {
             // Otherwise its a predifined array
             this.grid = grid;
         }
+        this.printedBoard = false; // Used to set the elements only needed once
+        // Hold score
+        this.score = 0;
+        // Display the score
+        this.screenBody = d3.select('body');
+ 
         // Select the svg board
         this.boardDisplay = d3.select('svg');
 
@@ -34,8 +40,7 @@ class Board {
             '2048': '#db272d',
 
         }
-        // // Hold score
-        // this.score = 0;
+
     }
     get boardGrid(){
         return this.grid; // Used in gameOver() 
@@ -47,7 +52,7 @@ class Board {
 
         // Remove all zeroes
         let noZeroArr = arr.filter((val) => val!==0);
-
+        let score=0;
         // Combine any adjacent values according to the rules
         let alreadyCombined = false;
         for(let i = 1; i< noZeroArr.length;i++){
@@ -55,10 +60,12 @@ class Board {
             let currVal = i; // hold the current i value
             if ((noZeroArr[i] === noZeroArr[currVal - 1]) && currVal-1 !== alreadyCombined){
                 // If an value matches the one before it, and the index prior hasnt already been combined, then combine them
-                
-                noZeroArr[currVal - 1] += parseInt(noZeroArr.splice(i,1)); // Splice value and add to adjacent
+                let numToCombine = parseInt(noZeroArr.splice(i, 1));
+                score = (noZeroArr[currVal - 1] + numToCombine);
+                noZeroArr[currVal - 1] += numToCombine; // Splice value and add to adjacent
                 alreadyCombined = currVal-1; // Holds the combined value so dont combine again this turn
                 i--; // Since combined a value, backtrack
+                
             }
         }
 
@@ -69,7 +76,7 @@ class Board {
         }
         // Return boolean whether array changed or not
         
-        return noZeroArr;
+        return [noZeroArr,score];
         
     }
     
@@ -91,6 +98,18 @@ class Board {
                 }           
             }
         }
+        if(!this.printedBoard){
+            // Displays the elements only needed to be set once (SCORE BANNER)
+            this.screenBody.append('div').attr('id', 'score-banner');
+            d3.select('#score-banner').append('h3').text('SCORE');
+            d3.select('#score-banner').append('p').attr('id','score-value'); // Shows score, changed in printBoard()
+            this.printedBoard = true; // Prevent this if block from being printed again (unless new game)
+        }
+        // Change the score display to the current score
+        d3.select('#score-value').text(this.score+"")
+
+
+
     }
 
     setTile(board,blockWidth,i,j,zero,grid,value){
@@ -213,14 +232,25 @@ class Board {
 
     }
 
+    changeScore(value){
+        // Add the score provided by second value from array returned from changeLine()
+
+        this.score+=value;
+
+        console.log(this.score);
+    }
+
     boardShift(thisBoard, reverse, vertical){
         // Used in shift() to actually shift the board
         thisBoard.forEach((val, i) => {
             let line = this.extractLine(i, vertical, reverse); // Returns extracted line
             line = Board.changeLine(line); // Change the lines according to game rules
-            this.insertLine(line, i, vertical, reverse); // Insert the lines back into board
+            this.changeScore(line[1]); // Takes score returned from changeLine() combining values and adds to total
+            
+            this.insertLine(line[0], i, vertical, reverse); // Insert the lines back into board
         });
-    }   
+    }
+    
 
     emptySpaces(){
         // Creates array of empty space coordinates, used in newTile()
