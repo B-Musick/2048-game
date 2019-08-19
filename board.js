@@ -17,7 +17,25 @@ class Board {
         this.UP = 'i';
         this.DOWN = 'k';
         this.LEFT = 'j';
-        this.RIGHT = 'l';  
+        this.RIGHT = 'l';
+
+        // Use to set block color in setTile() based on block value
+        this.color = {
+            '2': '#9cf0d4',
+            '4': '#78f0c8',
+            '8': '#47e6b1',
+            '16': '#09e3e3',
+            '32': '#09b7e3',
+            '64': '#d967eb',
+            '128': '#c421de',
+            '256': '#e35bb1',
+            '512': '#db2799',
+            '1024': '#db2760',
+            '2048': '#db272d',
+
+        }
+        // // Hold score
+        // this.score = 0;
     }
     get boardGrid(){
         return this.grid; // Used in gameOver() 
@@ -37,6 +55,7 @@ class Board {
             let currVal = i; // hold the current i value
             if ((noZeroArr[i] === noZeroArr[currVal - 1]) && currVal-1 !== alreadyCombined){
                 // If an value matches the one before it, and the index prior hasnt already been combined, then combine them
+                
                 noZeroArr[currVal - 1] += parseInt(noZeroArr.splice(i,1)); // Splice value and add to adjacent
                 alreadyCombined = currVal-1; // Holds the combined value so dont combine again this turn
                 i--; // Since combined a value, backtrack
@@ -60,38 +79,44 @@ class Board {
         let grid = [...this.grid];
         
         // Loop through the values in the grid and set the tiles appropriately
+        // Pass in the values to set its color in setTile()
         for (let i = 0; i < grid.length; i++) {
             for (let j = 0; j < grid.length; j++) {          
                 if(grid[i][j] === 0){
                     // If grid tile === 0
-                    this.setTile(this.boardDisplay, this.blockWidth, i, j, true,this.grid);
+                    this.setTile(this.boardDisplay, this.blockWidth, i, j, true,this.grid,grid[i][j]);
                 }else{
                     // If doesnt equal 0 then place value in rect
-                    this.setTile(this.boardDisplay, this.blockWidth, i, j, false,this.grid);
+                    this.setTile(this.boardDisplay, this.blockWidth, i, j, false,this.grid,grid[i][j]);
                 }           
             }
         }
     }
 
-    setTile(board,blockWidth,i,j,zero,grid){
+    setTile(board,blockWidth,i,j,zero,grid,value){
         // This will control the tiles in printBoard()
         // If value is zero (true or false)
         // board is the svg display
+        // Use 'value' along with the color choosing object to set block color
         board.append('rect')
             .attr('width', blockWidth)
             .attr('height', blockWidth)
             .attr('x', blockWidth * j)
             .attr('y', blockWidth * i)
-            .style('fill', zero ? 'lightblue':'lightgrey') // If zero then blue tile, else lightgrey
+            // If zero then red tile, else set to color object value
+            .style('fill', zero ? '#d98b8b':this.color[value]) 
             .style('stroke', 'black')
             .style('stroke-width', 1)
 
         board.append('text')
-            .text(zero ? '-' :grid[i][j] + "") // If zero put '-', else put the value
-            .attr('x', this.blockWidth / 2 + (this.blockWidth * j))
-            .attr('y', this.blockWidth / 2 + (this.blockWidth * i))
+            .text(zero ? '' :grid[i][j] + "") // If zero put blank '', else put the value
+            // Need to subtract (2 + (value.toString().length*4) so in the center of block horizontally as number places increase
+            .attr('x', (this.blockWidth / 2 + (this.blockWidth * j)) - (2 + (value.toString().length*4)))
+            // Need to add 3 so in center of block vertically
+            .attr('y', (this.blockWidth / 2 + (this.blockWidth * i)) + 3)
             .style('fill', 'black')
-            .style('text-align', 'center')
+            .style('text-align', 'center');
+        console.log()
     }
 
     extractLine(i, vertical, reverse){
@@ -247,15 +272,14 @@ let playGame=(arr)=>{
                 board.shift((String.fromCharCode(e.keyCode)).toLowerCase());
                 board.printBoard();  
             }else{
-
+                // If the game is over, print to screen and remove keylistener for keydown
                 d3.select('body').append('h1')
                     .text('Game Over!')
                     .style('color', 'black')
-                    .style('fill', 'black')
                     .style('text-align', 'center');
                 board.printBoard();
                 document.removeEventListener('keydown',move);
-                console.log('Game Over!')
+                console.log('Game Over!');
             }
         });
 
@@ -263,8 +287,9 @@ let playGame=(arr)=>{
 
 
 }
+
 // Start game
-playGame([[2, 2, 3, 4], [2, 2, 6, 4], [2, 8, 9, 4], [2, 8, 9, 4]]);
+playGame([[2, 2, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]);
 
 
 
