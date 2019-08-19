@@ -12,9 +12,10 @@ class Board {
         this.score = 0;
         // Display the score
         this.screenBody = d3.select('body');
- 
+        this.boardScoreContainer = d3.select('#board-score-container')
+        this.scoresControlsContainer = d3.select('.score-controls-container');
         // Select the svg board
-        this.boardDisplay = d3.select('svg');
+        this.boardDisplay = d3.select('svg').attr('id','board-display');
 
         // Board Dimensions
         this.blockWidth = (this.boardDisplay.attr('width'))/this.grid.length; // Width of individual blocks
@@ -100,7 +101,7 @@ class Board {
         }
         if(!this.printedBoard){
             // Displays the elements only needed to be set once (SCORE BANNER)
-            this.screenBody.append('div').attr('id', 'score-banner');
+            this.scoresControlsContainer.append('div').attr('id', 'score-banner');
             d3.select('#score-banner').append('h3').text('SCORE');
             d3.select('#score-banner').append('p').attr('id','score-value'); // Shows score, changed in printBoard()
             this.printedBoard = true; // Prevent this if block from being printed again (unless new game)
@@ -125,7 +126,7 @@ class Board {
             // If zero then red tile, else set to color object value
             .style('fill', zero ? '#d98b8b':this.color[value]) 
             .style('stroke', 'black')
-            .style('stroke-width', 1)
+            .style('stroke-width', 5)
 
         board.append('text')
             .text(zero ? '' :grid[i][j] + "") // If zero put blank '', else put the value
@@ -304,7 +305,8 @@ let playGame=(arr)=>{
             }else{
                 // If the game is over, print to screen and remove keylistener for keydown
                 d3.select('body').append('h1')
-                    .text('Game Over!')
+                    .attr('id','game-over')
+                    .text('GAME OVER!')
                     .style('color', 'black')
                     .style('text-align', 'center');
                 board.printBoard();
@@ -319,7 +321,8 @@ let playGame=(arr)=>{
 }
 
 // Start game
-playGame([[2, 2, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]);
+playGame([[2, 2, 16, 4], [16, 8, 16, 16], [8, 16, 8, 16], [16, 16, 4, 2]]);
+// playGame([[2, 2, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]);
 
 
 

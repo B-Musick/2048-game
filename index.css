@@ -1,7 +1,79 @@
 body{
-    display: flex;
+    font-family: 'Righteous', cursive;
+    background-color: rgb(156, 206, 244);
+    align-items: center;
 }
-#score-banner{
+tab{
+    margin-left:5px; 
+}
+
+#header{
     display: block;
-    flex-wrap: nowrap;
+    
+    text-align: center;
+    font-size: 40px;
+}
+#board-score-container{
+    flex-wrap: wrap;
+    display:flex;
+    justify-content: space-evenly;
+    align-content: center;
+    padding-top: 3vh;
+
+
+}
+.score-controls-container{
+    display: flex;
+    /* Reverse elements since want score on top */
+    flex-direction: column-reverse;
+}
+.score-controls-container ul{
+    list-style: none;
+    padding-left: 0 !important; 
+}
+ul h4{
+    font-size: 20px;
+}
+
+#board-display{
+    display:flex;
+    border: 5px solid black;
+
+    -webkit-box-shadow: 13px -11px 65px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 13px -11px 65px 0px rgba(0,0,0,0.75);
+    box-shadow: 13px -11px 65px 0px rgba(0,0,0,0.75);
+    
+}
+
+#score-banner{
+    color: white;
+    text-align: center;
+    display: block;
+    padding: 20px;
+    background-color: rgb(85, 83, 83);
+    height: 95px;
+    padding: 0 20px;
+    border: 5px solid black;
+
+    -webkit-box-shadow: 13px -11px 65px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 13px -11px 65px 0px rgba(0,0,0,0.75);
+    box-shadow: 13px -11px 65px 0px rgba(0,0,0,0.75);
+}
+
+#rules{
+    padding:30px;
+    padding-left: 100px;
+    
+ 
+}
+
+#game-over{
+    z-index: 1;
+    position: absolute;
+    top: 45vh;
+    left: 40vw;
+    padding: 25px;
+    background-color: red;
+    color: yellow !important;
+    border: 5px solid black;
 }

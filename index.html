@@ -9,9 +9,39 @@
     <!-- Fix error getting https://stackoverflow.com/questions/31075893/im-getting-favicon-ico-error -->
     <link rel="shortcut icon" href="">
     <title>Board2048</title>
+    <link href="https://fonts.googleapis.com/css?family=Righteous&display=swap" rel="stylesheet">
+    <!-- font-family: 'Righteous', cursive; -->
 </head>
 <body>
-    <svg id="board-display" width="300" height="300"></svg>
+    <div id="header">
+        <h1>2048</h1>
+    </div>
+    
+    <div id="board-score-container">
+        <svg id="board-display" width="300" height="300"></svg>
+        <div class="score-controls-container">
+            <ul>
+                <h4>CONTROLS</h4>
+                <li>i <tab>= UP</li>
+                <li>k = DOWN</li>
+                <li>j <tab>= LEFT</li>
+                <li>l <tab>= RIGHT</li>
+            
+            </ul>
+        </div>
+    <div id="rules">
+        <h3>HOW IT WORKS</h3>
+        <p>- MERGE INTEGERS OF THE SAME VALUE BY PRESSING THE DIRECTION WHICH WILL MAKE THIS OCCUR. </p>
+        <p>- POINTS ACCUMULATE ACCORDING TO THE OUTCOME OF THE MERGERS (VALUE OF THE NEW BLOCK).</p>
+        <p>- NEW BLOCK WITH 2 OR 4 APPEARS AFTER EACH VALID MOVE.</p>
+        <p>- ONCE BOARD IS FULL OF VALUES AND NO MORE COMBINATIONS POSSIBLE, GAME IS OVER.</p>
+    </div>
+
+    </div>
+
+    
+
+    
     <script src='board.js'></script>
     
 </body>

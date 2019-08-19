@@ -30,6 +30,8 @@ THINGS LEARNED
         });
 <!-- https://stackoverflow.com/questions/4402287/javascript-remove-event-listener -->
 
+CSS
+- To overlay a value (GAME OVER), use z-index and position: absolute, then use top/left/right/bottom to place it on the screen
 SVG
 - For adding text to say a rect, dont append it to the rect, append it to the actual display (see printBoard()
 
