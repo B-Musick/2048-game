@@ -17,9 +17,10 @@ class Board {
         this.UP = 'i';
         this.DOWN = 'k';
         this.LEFT = 'j';
-        this.RIGHT = 'l';
-
-        
+        this.RIGHT = 'l';  
+    }
+    get boardGrid(){
+        return this.grid; // Used in gameOver() 
     }
     
     static changeLine(arr){
@@ -48,104 +49,49 @@ class Board {
             noZeroArr.push(0);
         }
         // Return boolean whether array changed or not
-        console.log(arr === noZeroArr); 
+        
         return noZeroArr;
         
     }
     
     // Public method to print the board
     printBoard() {
-        
-        console.log(this.blockWidth);
-
         // This will print the board
         let grid = [...this.grid];
-        let board = ""; // This will hold the board to be printed
+        
+        // Loop through the values in the grid and set the tiles appropriately
         for (let i = 0; i < grid.length; i++) {
-            for (let j = 0; j < grid.length; j++) {
-                if(j!= grid.length-1){
-                    // If not at the end of the row, then check if contains 0 or not
-
-                    if(grid[i][j] === 0){
-                        // If equals 0, then this represents - on the board 
-                        this.boardDisplay.append('rect')
-                            .attr('width', this.blockWidth)
-                            .attr('height', this.blockWidth)
-                            .attr('x', this.blockWidth*j)
-                            .attr('y',this.blockWidth*i)
-                            .style('fill','lightblue')
-
-                        this.boardDisplay.append('text')
-                            .text('-')
-                            .attr('x', this.blockWidth/2+(this.blockWidth * j))
-                            .attr('y', this.blockWidth / 2 +(this.blockWidth * i))
-                            .style('fill','black')
-                            .style('text-align', 'center')
-
-
-                    }else{
-                        this.boardDisplay.append('rect')
-                            .attr('width', this.blockWidth)
-                            .attr('height', this.blockWidth)
-                            .attr('x', this.blockWidth * j)
-                            .attr('y', this.blockWidth * i)
-                            .style('fill', 'lightgrey');
-
-                        this.boardDisplay.append('text')
-                                .text(grid[i][j]+"") 
-                                .attr('x', this.blockWidth / 2 + (this.blockWidth * j))
-                                .attr('y', this.blockWidth / 2 +(this.blockWidth * i))
-                                .style('fill', 'black')
-                                .style('text-align', 'center')
-                                .style('font-size','30')
-                    }
+            for (let j = 0; j < grid.length; j++) {          
+                if(grid[i][j] === 0){
+                    // If grid tile === 0
+                    this.setTile(this.boardDisplay, this.blockWidth, i, j, true,this.grid);
                 }else{
-
-                    // If at the end of the row then need newline, then check if contains 0 or not
-                    if (grid[i][j] === 0) {
-                        // If equals 0, then this represents - on the board 
-                        this.boardDisplay.append('rect')
-                            .attr('width', this.blockWidth)
-                            .attr('height', this.blockWidth)
-                            .attr('x', this.blockWidth / 2 + (this.blockWidth * j))
-                            .attr('y', this.blockWidth * i)
-                            .style('fill', 'lightblue')
-
-                        this.boardDisplay.append('text')
-                            .text('-')
-                            .attr('x', this.blockWidth / 2 + (this.blockWidth * j))
-                            .attr('y', this.blockWidth / 2 + (this.blockWidth * i))
-                            .style('fill', 'black')
-                            .style('text-align', 'center')
-
-
-                    } else {
-                        // If not 0 then put the value
-
-                        // Add blocks to screen
-                        this.boardDisplay.append('rect')
-                            .attr('width', this.blockWidth)
-                            .attr('height', this.blockWidth)
-                            .attr('x', this.blockWidth * j)
-                            .attr('y', this.blockWidth * i)
-                            .style('fill', 'lightgrey');
-                        
-                        // Add block values to screen
-                        this.boardDisplay.append('text')
-                            .text(grid[i][j] + "")
-                            .attr('x', this.blockWidth / 2 + (this.blockWidth * j))
-                            .attr('y', this.blockWidth / 2 + (this.blockWidth * i))
-                            .style('fill', 'black')
-                            .style('text-align', 'center')
-                            .style('font-size', '30')
-                    }
-                }
-                    
+                    // If doesnt equal 0 then place value in rect
+                    this.setTile(this.boardDisplay, this.blockWidth, i, j, false,this.grid);
+                }           
             }
         }
-        
-        
-        
+    }
+
+    setTile(board,blockWidth,i,j,zero,grid){
+        // This will control the tiles in printBoard()
+        // If value is zero (true or false)
+        // board is the svg display
+        board.append('rect')
+            .attr('width', blockWidth)
+            .attr('height', blockWidth)
+            .attr('x', blockWidth * j)
+            .attr('y', blockWidth * i)
+            .style('fill', zero ? 'lightblue':'lightgrey') // If zero then blue tile, else lightgrey
+            .style('stroke', 'black')
+            .style('stroke-width', 1)
+
+        board.append('text')
+            .text(zero ? '-' :grid[i][j] + "") // If zero put '-', else put the value
+            .attr('x', this.blockWidth / 2 + (this.blockWidth * j))
+            .attr('y', this.blockWidth / 2 + (this.blockWidth * i))
+            .style('fill', 'black')
+            .style('text-align', 'center')
     }
 
     extractLine(i, vertical, reverse){
@@ -193,73 +139,122 @@ class Board {
     shift(direction){
         // This should return a new board object in the shifted form in direction
         // The existing board shouldnt be
-        // let thisBoard = new Board([...this.grid]); // Make deep copy of board
+        
         let thisBoard = this.grid;
-        // console.log(thisBoard.printBoard());
-        if(direction===this.LEFT||direction===this.RIGHT){
-            let vertical = false; // the line extracted is a row not a column
-            if(direction === this.LEFT){
-                console.log('here')
-                // If direction is left, then the rows dont need to be reversed
-                let reverse = false;
-                for(let i =0;i<thisBoard.length;i++){
-                    console.log(i)
-                    let line = this.extractLine(i, vertical,reverse); // Returns extracted line
-                    line = Board.changeLine(line); // Change the lines according to game rules
-                    this.insertLine(line,i,vertical,reverse); // Insert the lines back into board
-                };
-            }else{
-                // If direction is right, row needs to be reversed to do the combining
-                let reverse = true;
-                thisBoard.forEach((val, i) => {
-                    let line = this.extractLine(i, vertical, reverse); // Returns extracted line
-                    line = Board.changeLine(line); // Change the lines according to game rules
-                    this.insertLine(line, i, vertical,reverse); // Insert the lines back into board
-                });
-            }
-        }else if(direction === this.UP|| direction === this.DOWN){
-            let vertical = true; // the line extracted is a column
-            if (direction === this.UP) {
-                let reverse = false;
-                // If direction is up, then the columns dont need to be reversed
-                thisBoard.forEach((val, i) => {
-                    let line = this.extractLine(i, vertical, reverse); // Returns extracted line
-                    line = Board.changeLine(line); // Change the lines according to game rules
-                    this.insertLine(line, i, vertical, reverse); // Insert the lines back into board
-                });
-            } else {
-                let reverse = true;
-                // If direction is down, column needs to be reversed to do the combining
-                thisBoard.forEach((val, i) => {
-                    let line = this.extractLine(i, vertical, reverse); // Returns extracted line
-                    line = Board.changeLine(line); // Change the lines according to game rules
-                    this.insertLine(line, i, vertical, reverse); // Insert the lines back into board
-                });
+        let prevBoard = JSON.parse(JSON.stringify(this.grid)); // Make deep copy of board
+
+        // the line extracted is a row not a column
+        if(direction === this.LEFT){   
+            // If direction is left, then the rows dont need to be reversed
+            this.boardShift(thisBoard,false,false);
+        } else if (direction === this.RIGHT){
+            // If direction is right, row needs to be reversed to do the combining
+            this.boardShift(thisBoard, true, false);
+        }
+    
+        else if (direction === this.UP) {
+            // If direction is up, then the columns dont need to be reversed
+            this.boardShift(thisBoard, false, true);
+
+
+        } else if(direction === this.DOWN) {
+            // If direction is down, column needs to be reversed to do the combining
+            this.boardShift(thisBoard, true, true);
+        }
+        // console.log(thisBoard);
+        // console.log(prevBoard);
+        if(!(this.checkValid(prevBoard,thisBoard))){
+            // If the previous array and current one are different, add tile
+            this.newTile();
+        };
+        
+    }
+
+    checkValid(prevBoard, newBoard){
+        // Checks if the board actually changed, then it will add the newTile
+        // Dont want to add a tile if nothing changed
+        let same = true;
+        prevBoard.forEach((array,i)=>{
+            array.forEach((val,j)=>{
+                if(val!==newBoard[i][j]){
+                    same = false;
+                }
+            })
+            
+            
+        })
+        ;
+        return same;
+
+    }
+
+    boardShift(thisBoard, reverse, vertical){
+        // Used in shift() to actually shift the board
+        thisBoard.forEach((val, i) => {
+            let line = this.extractLine(i, vertical, reverse); // Returns extracted line
+            line = Board.changeLine(line); // Change the lines according to game rules
+            this.insertLine(line, i, vertical, reverse); // Insert the lines back into board
+        });
+    }   
+
+    emptySpaces(){
+        // Creates array of empty space coordinates, used in newTile()
+        let emptyCoord = []; // Holds array of [i,j] for the zeroes
+        // Find the coordinates of the emptySpaces, to be used by newTile()
+        for (let i = 0; i < this.grid.length; i++) {
+            for (let j = 0; j < this.grid.length; j++) {
+                if (this.grid[i][j] === 0) {
+                    // Pass coordinate of 0 place to the array
+                    emptyCoord.push([i,j])
+                } 
             }
         }
+        return emptyCoord;
+    }
+
+    newTile(){
+        let emptySpaces = this.emptySpaces();  // Get empty space coordinates
+        let emptySpacesLength = emptySpaces.length; // Get amount of empty spaces
+        let randomIndex = Math.floor(Math.random()*emptySpacesLength); // Get randomIndex val
+        let coord = emptySpaces[randomIndex]; // Get random coordinates from array
+        this.grid[coord[0]][coord[1]]=2; // Set the new empty space to a value
+    }
+
+    gameOver(){
+        // Occurs if the prevBoard is the same as the current and no other moves can be made
+        let directionArray = ['i','j','k','l']; // Directions to be tested
+        
+        return directionArray.every(direction=>{
+            // For every direction, if no change occurs then game over (.every() returns true)
+            let testBoard = new Board(JSON.parse(JSON.stringify(this.grid))); // Deep copy
+            testBoard.shift(direction); // Produce the shift on test board
+            return this.checkValid(testBoard.boardGrid,this.grid);
+        })
         
     }
 }
 
+
+
 let playGame=(arr)=>{
     let board = new Board(arr);
-    // board.changeLine([8, 8, 0, 0, 0, 0]);
-    // board.extractLine(2,true,true);
-    // board.printBoard();
-    // board.insertLine([13,14,15],2,true,true);
     board.printBoard();
-    document.addEventListener('keydown',(e)=>{
-        // Shift the board when the matching keycode pressed
-        board.shift((String.fromCharCode(e.keyCode)).toLowerCase());
-        board.printBoard();
-    })
+
     
-    // board.shift('k');
-    // board.printBoard();
-    // board.shift('j');
-    // board.printBoard();
+        document.addEventListener('keydown',(e)=>{
+            // Shift the board when the matching keycode pressed
+            if (!board.gameOver()) {
+                board.shift((String.fromCharCode(e.keyCode)).toLowerCase());
+                board.printBoard();  
+            } else {
+
+                console.log('Game Over!')
+            }  
+        });
+
 }
-playGame([[2, 2, 2], [0, 2, 4], [2, 0, 2]]);
+// Start game
+playGame([[2, 2, 3], [2, 2, 6], [2, 8, 9]]);
 
 
 
