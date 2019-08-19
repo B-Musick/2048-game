@@ -241,20 +241,30 @@ let playGame=(arr)=>{
     board.printBoard();
 
     
-        document.addEventListener('keydown',(e)=>{
+        document.addEventListener('keydown',move=(e)=>{
             // Shift the board when the matching keycode pressed
             if (!board.gameOver()) {
                 board.shift((String.fromCharCode(e.keyCode)).toLowerCase());
                 board.printBoard();  
-            } else {
+            }else{
 
+                d3.select('body').append('h1')
+                    .text('Game Over!')
+                    .style('color', 'black')
+                    .style('fill', 'black')
+                    .style('text-align', 'center');
+                board.printBoard();
+                document.removeEventListener('keydown',move);
                 console.log('Game Over!')
-            }  
+            }
         });
+
+
+
 
 }
 // Start game
-playGame([[2, 2, 3], [2, 2, 6], [2, 8, 9]]);
+playGame([[2, 2, 3, 4], [2, 2, 6, 4], [2, 8, 9, 4], [2, 8, 9, 4]]);
 
 
 
