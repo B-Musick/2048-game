@@ -273,7 +273,15 @@ class Board {
         let emptySpacesLength = emptySpaces.length; // Get amount of empty spaces
         let randomIndex = Math.floor(Math.random()*emptySpacesLength); // Get randomIndex val
         let coord = emptySpaces[randomIndex]; // Get random coordinates from array
-        this.grid[coord[0]][coord[1]]=2; // Set the new empty space to a value
+        this.grid[coord[0]][coord[1]]=this.randomValue(); // Set the new empty space to a value
+    }
+
+    randomValue(){
+        // Returns four 20% of the time and 2 80%
+        // Used in newTile() to set the value of the new tile to 2 or 4
+        let tileArray = [2,2,4,2,2,4,2,2,4,2];
+        let randomIndex = Math.floor(Math.random()*tileArray.length);
+        return tileArray[randomIndex];
     }
 
     gameOver(){
@@ -297,32 +305,29 @@ let playGame=(arr)=>{
     board.printBoard();
 
     
-        document.addEventListener('keydown',move=(e)=>{
-            // Shift the board when the matching keycode pressed
-            if (!board.gameOver()) {
-                board.shift((String.fromCharCode(e.keyCode)).toLowerCase());
-                board.printBoard();  
-            }else{
-                // If the game is over, print to screen and remove keylistener for keydown
-                d3.select('body').append('h1')
-                    .attr('id','game-over')
-                    .text('GAME OVER!')
-                    .style('color', 'black')
-                    .style('text-align', 'center');
-                board.printBoard();
-                document.removeEventListener('keydown',move);
-                console.log('Game Over!');
-            }
-        });
-
-
-
+    document.addEventListener('keydown',move=(e)=>{
+        // Shift the board when the matching keycode pressed
+        if (!board.gameOver()) {
+            board.shift((String.fromCharCode(e.keyCode)).toLowerCase());
+            board.printBoard();  
+        }else{
+            // If the game is over, print to screen and remove keylistener for keydown
+            d3.select('body').append('h1')
+                .attr('id','game-over')
+                .text('GAME OVER!')
+                .style('color', 'black')
+                .style('text-align', 'center');
+            board.printBoard();
+            document.removeEventListener('keydown',move);
+            console.log('Game Over!');
+        }
+    });
 
 }
 
 // Start game
-playGame([[2, 2, 16, 4], [16, 8, 16, 16], [8, 16, 8, 16], [16, 16, 4, 2]]);
-// playGame([[2, 2, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]);
+
+playGame([[2, 2, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]);
 
 
 

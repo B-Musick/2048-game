@@ -33,6 +33,10 @@ tab{
 }
 ul h4{
     font-size: 20px;
+    text-decoration: underline;
+}
+ul li{
+    padding-left: 20px; 
 }
 
 #board-display{
@@ -64,7 +68,6 @@ ul h4{
     padding:30px;
     padding-left: 100px;
     
- 
 }
 
 #game-over{
