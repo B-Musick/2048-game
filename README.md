@@ -1,6 +1,4 @@
-
-Methods and uses outlined
-Code inside said methods wholly my own and refactored for Javascript
+Idea from Assignment (from John Bates) in University Computer Science Course which was run in the terminal and in Java. I refactored it to be animated with D3. Code inside methods wholly my own and refactored for Javascript.
 
 THINGS LEARNED
 - 'static' will make a class method
